@@ -754,7 +754,7 @@ async function exportLesson(l){
   tb(s,'عهد الفتى المسلم',{x:1,y:4.7,w:W-2,h:0.6,align:'center',fontSize:26,bold:true,color:PX.gold});
   tb(s,'«أنا شاب مسلم ابن أمة رسالية، أبني نفسي لبنةً لبنةً بثبات ويقين»',{x:1,y:5.35,w:W-2,h:0.8,align:'center',fontSize:18,color:PX.text2});
   const name=('اللقاء '+l.ordinal+' - '+l.title).replace(/[\\/:*?"<>|]/g,'').slice(0,90)+'.pptx';
-  let blob;try{blob=await pptx.write({outputType:'blob'})}catch(e){toast('تعذّر إنشاء الملف.');return}
+  let blob;try{const raw=await pptx.write({outputType:'blob'});blob=new Blob([raw],{type:'application/vnd.openxmlformats-officedocument.presentationml.presentation'})}catch(e){toast('تعذّر إنشاء الملف.');return}
   if(DL===undefined&&window.claude){try{DL=await window.claude.use('downloads')}catch(e){DL=null}}
   if(DL&&DL!=='native'){toast('اختر «حفظ» لتنزيل الملف',3000);try{await DL.save({filename:name,data:blob});toast('تم حفظ السلايدات')}catch(e){const c=e&&e.code;toast(c==='declined'?'أُلغي الحفظ':c==='rate_limited'?'هناك نافذة حفظ مفتوحة بالفعل':'تعذّر حفظ الملف في هذا العرض')}}
   else if(DL==='native'){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();toast('تم تنزيل السلايدات')}
